@@ -1,7 +1,7 @@
 require('dotenv').config()//solo queremos que se ejecute el config
 
 const config = {
-    dburl:'http://localhost:9000/api/v1',
+    dburl:'apm-sensoresgenericos-api-production.up.railway.app/api/v1',
     topic:'sensor3s/all',
     port: process.env.PORT || 9000, //9000 si no existe 
     nodeEnv: process.env.NODE_ENV || 'development', //desarrollo, testing, produccion
