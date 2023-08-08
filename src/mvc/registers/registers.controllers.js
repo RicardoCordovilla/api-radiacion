@@ -91,18 +91,20 @@ const createRegister = async (data) => {
     const currentLocalDate = formatDate(currentDate.toLocaleDateString("es-EC", { timeZone: 'America/Lima' }, { year: 'numeric', month: '2-digit', day: '2-digit' }).split('/').reverse().join('-'))
     const currentLocalTime = (currentDate.toLocaleTimeString("es-EC", { timeZone: 'America/Lima' }, { hour: '2-digit', minute: '2-digit' }).slice(0, 5))
 
-    const newRegisterDay = await Registers.findOrCreate({
-        where: { type: 'day', date: currentLocalDate, stationtitle: data.station },
-        defaults: {
-            stationtitle: data.station,
-            temp: data.temp,
-            hum: data.hum,
-            values: data.values,
-            date: currentLocalDate,
-            time: currentLocalTime,
-            type: 'day'
-        }
-    })
+    if (!data.type) {
+        const newRegisterDay = await Registers.findOrCreate({
+            where: { type: 'day', date: currentLocalDate, stationtitle: data.station },
+            defaults: {
+                stationtitle: data.station,
+                temp: data.temp,
+                hum: data.hum,
+                values: data.values,
+                date: currentLocalDate,
+                time: currentLocalTime,
+                type: 'day'
+            }
+        })
+    }
 
     const newRegister = await Registers.create({
         stationtitle: data.station,
@@ -111,6 +113,7 @@ const createRegister = async (data) => {
         values: data.values,
         date: currentLocalDate,
         time: currentLocalTime,
+        type: data.type
     })
 
     updateRegisterDay(currentLocalDate, data.station)

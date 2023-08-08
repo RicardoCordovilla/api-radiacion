@@ -1,3 +1,6 @@
+const registersControllers = require('./mvc/registers/registers.controllers')
+
+
 const cors = require('cors')
 const registersRouter = require('./mvc/registers/registers.routes')
 const stationsRouter = require('./mvc/stations/stations.routes')
@@ -61,6 +64,14 @@ const mqtt = require('mqtt')
 const config = require('./config')
 const client = mqtt.connect('wss://broker.emqx.io:8084/mqtt')
 
+const createRegister = async (body) => {
+    const { station, hum, temp, values, type } = body
+    console.log('create')
+    await registersControllers.createRegister({ station, hum, temp, values, type })
+        .then(data => { return data })
+        .catch((err) => { return data })
+}
+
 client.on('connect', function () {
     client.subscribe(config.topic, function (err) {
         // if (!err) {
@@ -76,18 +87,33 @@ client.on('connect', function () {
 
 client.on('message', async function (topic, message) {
     // message is Buffer
+    const subtopic = topic.split('/')[1]
     console.log("message recived: ", message.toString())
-    jsonMessage = JSON.parse(message)
-    console.log(jsonMessage)
+    console.log("topic: ", topic.split('/')[1])
 
-    jsonMessage.forEach(element => {
-        const body = element
-        axios.post(config.dburl + '/registers',
-            body
-        )
-            .then(response => console.log(response.data))
+    if (subtopic === 'all') {
+        jsonMessage = JSON.parse(message)
+        console.log(jsonMessage)
+        jsonMessage.forEach(element => {
+            const body = element
+            console.log(body)
+            createRegister(body)
+                .then(response => console.log(response))
+                .catch(err => console.log(err))
+        });
+    }
+
+    if (subtopic === 'alerts') {
+        const body = JSON.parse(message)
+        console.log(body)
+        createRegister(body)
+            .then(response => console.log(response))
             .catch(err => console.log(err))
-    });
+    }
+
+
+
+
     // client.end()
 })
 
