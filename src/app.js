@@ -98,8 +98,9 @@ client.on('message', async function (topic, message) {
             const body = element
             console.log(body)
             createRegister(body)
-                .then(response => console.log(response))
-                .catch(err => console.log(err))
+            // axios.post(config.dburl + '/registers', body)
+            //     .then(response => console.log(response))
+            //     .catch(err => console.log(err))
         });
     }
 
@@ -107,8 +108,9 @@ client.on('message', async function (topic, message) {
         const body = JSON.parse(message)
         console.log(body)
         createRegister(body)
-            .then(response => console.log(response))
-            .catch(err => console.log(err))
+        // axios.post(config.dburl + '/registers', body)
+        //     .then(response => console.log(response))
+        //     .catch(err => console.log(err))
     }
 
 
