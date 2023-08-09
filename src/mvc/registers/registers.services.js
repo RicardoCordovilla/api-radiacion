@@ -49,6 +49,19 @@ const getRegistersByDate = (req, res) => {
         })
 }
 
+const getAlertsByDate = (req, res) => {
+    const from = req.query.from
+    const to = req.query.to
+    const station = req.params.station
+    registersControllers.getAlertsByDate(from, to, station)
+        .then(data => {
+            res.status(200).json(data)
+        })
+        .catch(err => {
+            res.status(400).json({ message: err.message })
+        })
+}
+
 const getLast = (req, res) => {
     const station = req.params.station
     registersControllers.getLast(station)
@@ -78,6 +91,7 @@ module.exports = {
     getAllRegisters,
     getRegisters,
     getRegistersByDate,
+    getAlertsByDate,
     getLast,
     deleteRegister
 }

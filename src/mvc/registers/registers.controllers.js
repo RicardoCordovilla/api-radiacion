@@ -135,7 +135,8 @@ const getAllRegisters = async () => {
 const getRegisters = async (stationtitle) => {
     const data = await Registers.findAll({
         where: {
-            stationtitle
+            stationtitle,
+            type: { [Op.and]: ['day', 'hour'] }
         },
         // include: [
         //     {
@@ -184,6 +185,27 @@ const getRegistersByDate = async (startDate, endDate, stationtitle) => {
 
 }
 
+const getAlertsByDate = async (startDate, endDate, stationtitle) => {
+
+    const data = await Registers.findAll(
+        {
+            where: {
+                stationtitle,
+                type: 'alert',
+                date: {
+                    [Op.between]: [startDate, endDate]
+                }
+            },
+            order: [['createdAt']]
+        }
+    )
+    return data
+}
+
+
+
+
+
 const getLast = async (stationtitle) => {
     const data = await Registers.findOne({
         limit: 1,
@@ -210,5 +232,6 @@ module.exports = {
     getRegisters,
     getLast,
     getRegistersByDate,
+    getAlertsByDate,
     deleteRegister
 }
