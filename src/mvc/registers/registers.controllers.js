@@ -211,6 +211,7 @@ const getLast = async (stationtitle) => {
         limit: 1,
         where: {
             stationtitle,
+            type: 'hour',
             createdAt: { [Op.not]: null }
         },
         order: [['createdAt', 'DESC']]
