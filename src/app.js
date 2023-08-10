@@ -107,6 +107,7 @@ client.on('message', async function (topic, message) {
     if (subtopic === 'alerts') {
         const body = JSON.parse(message)
         console.log({ ...body, type: 'alert' })
+
         createRegister({ ...body, type: 'alert' })
         // axios.post(config.dburl + '/registers', body)
         //     .then(response => console.log(response))
