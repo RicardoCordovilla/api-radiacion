@@ -140,7 +140,7 @@ const getRegisters = async (stationtitle) => {
     const data = await Registers.findAll({
         where: {
             stationtitle,
-            type: { [Op.and]: ['day', 'hour'] }
+            type: { [Op.or]: ['day', 'hour'] }
         },
         // include: [
         //     {
