@@ -66,59 +66,63 @@ const updateRegisterDay = async (date, stationtitle) => {
 }
 
 const createRegister = async (data) => {
-
-    const getMaxMinRange = await Stations.findOne({
-        where: { title: data.station }
-
-    })
-    const tempRange = getMaxMinRange.tempRange
-    const humRange = getMaxMinRange.humRange
-
-    // console.log('===================', getMaxMinRange)
+    if (data.values !== null) {
 
 
+        const getMaxMinRange = await Stations.findOne({
+            where: { title: data.station }
 
-    // if (data.temp > tempRange.max) sendAlert(`Temperatura ${data.temp}°C alta en:  
-    // Equipo: ${data.station},
-    // Secction: ${getMaxMinRange.alias}, 
-    // Camas: ${getMaxMinRange.beds}    
-    // `)
-
-    const currentDate = new Date()
-
-    // console.log(currentDate.toLocaleDateString("es-EC", { timeZone: 'America/Lima' }, { year: 'numeric', month: '2-digit', day: '2-digit' }).split('/').reverse().join('-'))
-    // console.log(currentDate.toLocaleTimeString("es-EC", { timeZone: 'America/Lima' }, { hour: '2-digit', minute: '2-digit' }))
-    const currentLocalDate = formatDate(currentDate.toLocaleDateString("es-EC", { timeZone: 'America/Lima' }, { year: 'numeric', month: '2-digit', day: '2-digit' }).split('/').reverse().join('-'))
-    const currentLocalTime = (currentDate.toLocaleTimeString("es-EC", { timeZone: 'America/Lima' }, { hour: '2-digit', minute: '2-digit' }).slice(0, 5))
-
-    if (data.type !== 'alert') {
-        const newRegisterDay = await Registers.findOrCreate({
-            where: { type: 'day', date: currentLocalDate, stationtitle: data.station },
-            defaults: {
-                stationtitle: data.station,
-                temp: data.temp,
-                hum: data.hum,
-                values: data.values,
-                date: currentLocalDate,
-                time: currentLocalTime,
-                type: 'day'
-            }
         })
+        const tempRange = getMaxMinRange.tempRange
+        const humRange = getMaxMinRange.humRange
+
+        // console.log('===================', getMaxMinRange)
+
+
+
+        // if (data.temp > tempRange.max) sendAlert(`Temperatura ${data.temp}°C alta en:  
+        // Equipo: ${data.station},
+        // Secction: ${getMaxMinRange.alias}, 
+        // Camas: ${getMaxMinRange.beds}    
+        // `)
+
+        const currentDate = new Date()
+
+        // console.log(currentDate.toLocaleDateString("es-EC", { timeZone: 'America/Lima' }, { year: 'numeric', month: '2-digit', day: '2-digit' }).split('/').reverse().join('-'))
+        // console.log(currentDate.toLocaleTimeString("es-EC", { timeZone: 'America/Lima' }, { hour: '2-digit', minute: '2-digit' }))
+        const currentLocalDate = formatDate(currentDate.toLocaleDateString("es-EC", { timeZone: 'America/Lima' }, { year: 'numeric', month: '2-digit', day: '2-digit' }).split('/').reverse().join('-'))
+        const currentLocalTime = (currentDate.toLocaleTimeString("es-EC", { timeZone: 'America/Lima' }, { hour: '2-digit', minute: '2-digit' }).slice(0, 5))
+
+        if (data.type !== 'alert') {
+            const newRegisterDay = await Registers.findOrCreate({
+                where: { type: 'day', date: currentLocalDate, stationtitle: data.station },
+                defaults: {
+                    stationtitle: data.station,
+                    temp: data.temp,
+                    hum: data.hum,
+                    values: data.values,
+                    date: currentLocalDate,
+                    time: currentLocalTime,
+                    type: 'day'
+                }
+            })
+        }
+
+        const newRegister = await Registers.create({
+            stationtitle: data.station,
+            temp: data.temp,
+            hum: data.hum,
+            values: data.values,
+            date: currentLocalDate,
+            time: currentLocalTime,
+            type: data.type
+        })
+
+        updateRegisterDay(currentLocalDate, data.station)
+
+        return newRegister
     }
 
-    const newRegister = await Registers.create({
-        stationtitle: data.station,
-        temp: data.temp,
-        hum: data.hum,
-        values: data.values,
-        date: currentLocalDate,
-        time: currentLocalTime,
-        type: data.type
-    })
-
-    updateRegisterDay(currentLocalDate, data.station)
-
-    return newRegister
 }
 
 const getAllRegisters = async () => {
