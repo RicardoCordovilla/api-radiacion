@@ -94,14 +94,14 @@ client.on('message', async function (topic, message) {
     if (subtopic === 'all') {
         jsonMessage = JSON.parse(message)
         console.log(jsonMessage)
-        jsonMessage.forEach(element => {
-            const body = element
+        // jsonMessage.forEach(element => {
+            const body = jsonMessage
             console.log(body)
             createRegister(body)
             // axios.post(config.dburl + '/registers', body)
             //     .then(response => console.log(response))
             //     .catch(err => console.log(err))
-        });
+        // });
     }
 
     if (subtopic === 'alerts') {
