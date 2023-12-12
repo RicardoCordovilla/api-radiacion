@@ -114,6 +114,17 @@ client.on('message', async function (topic, message) {
         //     .catch(err => console.log(err))
     }
 
+    if (subtopic === 'notifications') {
+        const body = JSON.parse(message)
+        console.log({ ...body, type: 'notification' })
+
+        // createRegister({ ...body, type: 'notification' })
+        // axios.post(config.dburl + '/registers', body)
+        //     .then(response => console.log(response))
+        //     .catch(err => console.log(err))
+    }
+
+
 
 
 
